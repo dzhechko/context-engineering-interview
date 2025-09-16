@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Контекст-инжиниринг для агентов | Лэнс Мартин, LangChain</title>
+    <meta name="description" content="Подробный интерактивный транскрипт беседы с Лэнсом Мартином о контекст-инжиниринге для AI агентов, промпт-инжиниринге и LangChain">
+    <meta name="keywords" content="контекст-инжиниринг, LangChain, AI агенты, промпт-инжиниринг, LLM, Лэнс Мартин">
+    <meta name="author" content="Дмитрий Жечков">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph meta tags -->
+    <meta property="og:title" content="Контекст-инжиниринг для агентов | Лэнс Мартин">
+    <meta property="og:description" content="Подробный интерактивный транскрипт беседы о контекст-инжиниринге для AI агентов">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    
+    <!-- Twitter Card meta tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Контекст-инжиниринг для агентов | Лэнс Мартин">
+    <meta name="twitter:description" content="Подробный интерактивный транскрипт беседы о контекст-инжиниринге для AI агентов">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome для иконок -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    
+    <!-- Custom styles -->
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .search-highlight {
+            background-color: #fef08a;
+            font-weight: 600;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .scroll-progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #10b981);
+            z-index: 9999;
+            transition: width 0.2s ease;
+        }
+        .floating-nav {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .speaker-highlight {
+            font-weight: 600;
+            margin-right: 8px;
+        }
+        .speaker-alessio { color: #059669; }
+        .speaker-swyx { color: #dc2626; }
+        .speaker-lance { color: #2563eb; }
+        .section-navigation {
+            position: sticky;
+            top: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 16px;
+        }
+        .nav-item {
+            transition: all 0.2s ease;
+        }
+        .nav-item:hover {
+            background-color: #f3f4f6;
+            transform: translateX(4px);
+        }
+        .nav-item.active {
+            background-color: #dbeafe;
+            color: #2563eb;
+            font-weight: 600;
+        }
+        .category-card {
+            text-decoration: none;
+            display: block;
+            transition: all 0.2s ease;
+        }
+        .category-card:hover {
+            text-decoration: none;
+        }
+        .category-card:focus {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+        }
+        .category-card:active {
+            transform: scale(0.95) !important;
+        }
+        /* Footer Styles */
+        footer {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+        }
+        footer .telegram-link {
+            background: linear-gradient(135deg, #0088cc 0%, #0066aa 100%);
+            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.3);
+        }
+        footer .telegram-link:hover {
+            box-shadow: 0 8px 25px rgba(0, 136, 204, 0.4);
+        }
+        @media (max-width: 1024px) {
+            .section-navigation {
+                position: relative;
+                top: 0;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 antialiased">
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress-bar" id="scrollProgress"></div>
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex-1">
+                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 leading-tight">
+                        Контекст-инжиниринг для агентов
+                    </h1>
+                    <p class="text-lg text-gray-600 mt-1">
+                        Лэнс Мартин, LangChain
+                    </p>
+                </div>
+                
+                <!-- Search -->
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <input
+                            type="text"
+                            id="searchInput"
+                            placeholder="Поиск по тексту..."
+                            class="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                        >
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                    <button id="clearSearch" class="hidden px-3 py-2 text-sm bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+                        Очистить
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+            
+            <!-- Left Sidebar - Navigation -->
+            <aside class="lg:w-1/4">
+                <div class="section-navigation">
+                    <h3 class="font-semibold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-list-ul mr-2 text-blue-500"></i>
+                        Содержание
+                    </h3>
+                    <nav id="sectionNav" class="space-y-2">
+                        <a href="#intro" class="nav-item block px-3 py-2 rounded-md text-sm hover:bg-gray-50 transition">
+                            Введение
+                        </a>
+                        <a href="#context-engineering-birth" class="nav-item block px-3 py-2 rounded-md text-sm hover:bg-gray-50 transition">
+                            Как появился контекст-инжиниринг
+                        </a>
+                        <a href="#prompt-vs-context" class="nav-item block px-3 py-2 rounded-md text-sm hover:bg-gray-50 transition">
+                            Промпт vs Контекст инжиниринг
+                        </a>
+                        <a href="#five-categories" class="nav-item block px-3 py-2 rounded-md text-sm hover:bg-gray-50 transition">
+                            Пять категорий контекст-инжиниринга
+                        </a>
+                        <a href="#offloading" class="nav-item block px-3 py-2 rounded-md text-sm hover:bg-gray-50 transition pl-6">
+                            1. Offloading (Выгрузка)
+                        </a>
+                        <a href="#isolation" class="nav-item block px-3 py-2 rounded-md text-sm hover:bg-gray-50 transition pl-6">
+                            2. Context Isolation (Изоляция)
+                        </a>
+                        <a href="#retrieval" class="nav-item block px-3 py-2 rounded-md text-sm hover:bg-gray-50 transition pl-6">
+                            3. Retrieval (Извлечение)
+                        </a>
+                        <a href="#reducing" class="nav-item block px-3 py-2 rounded-md text-sm hover:bg-gray-50 transition pl-6">
+                            4. Reducing Context (Сжатие)
+                        </a>
+                        <a href="#caching" class="nav-item block px-3 py-2 rounded-md text-sm hover:bg-gray-50 transition pl-6">
+                            5. Caching (Кеширование)
+                        </a>
+                        <a href="#memory-vs-context" class="nav-item block px-3 py-2 rounded-md text-sm hover:bg-gray-50 transition">
+                            Memory vs Context Engineering
+                        </a>
+                        <a href="#bitter-lesson" class="nav-item block px-3 py-2 rounded-md text-sm hover:bg-gray-50 transition">
+                            Горький урок в AI-инжиниринге
+                        </a>
+                        <a href="#frameworks" class="nav-item block px-3 py-2 rounded-md text-sm hover:bg-gray-50 transition">
+                            Фреймворки и абстракции
+                        </a>
+                        <a href="#mcp" class="nav-item block px-3 py-2 rounded-md text-sm hover:bg-gray-50 transition">
+                            MCP и стандартизация
+                        </a>
+                        <a href="#practical-conclusions" class="nav-item block px-3 py-2 rounded-md text-sm hover:bg-gray-50 transition">
+                            Практические выводы
+                        </a>
+                        <a href="#conclusion" class="nav-item block px-3 py-2 rounded-md text-sm hover:bg-gray-50 transition">
+                            Заключение
+                        </a>
+                    </nav>
+                </div>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="lg:w-3/4">
+                <article class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sm:p-8">
+                    
+                    <!-- Article Header -->
+                    <header class="border-b border-gray-200 pb-6 mb-8">
+                        <div class="flex items-center text-sm text-gray-500 mb-4">
+                            <i class="fas fa-calendar-alt mr-2"></i>
+                            <time datetime="2025-09-16">16 сентября 2025</time>
+                            <span class="mx-2">•</span>
+                            <i class="fas fa-user mr-2"></i>
+                            <span>Транскрипт подготовил <a href="https://t.me/llm_notes" target="_blank" class="text-blue-600 hover:text-blue-800">Дмитрий Жечков</a></span>
+                        </div>
+                        
+                        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                            Подробный транскрипт беседы с Лэнсом Мартином (LangChain) о контекст-инжиниринге для AI агентов, 
+                            пяти основных категориях управления контекстом и практических подходах к построению эффективных агентных систем.
+                        </p>
+                        
+                        <div class="flex items-center space-x-4 text-sm">
+                            <a href="https://www.youtube.com/watch?v=_IlTcWciEC4" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                                <i class="fab fa-youtube mr-2"></i>
+                                Оригинальное видео
+                            </a>
+                            <span class="text-gray-400">|</span>
+                            <span class="text-gray-600">Space Podcast</span>
+                        </div>
+                    </header>
+
+                    <!-- Transcript Content -->
+                    <div id="transcriptContent" class="prose prose-lg max-w-none">
+                        
+                        <section id="intro" class="mb-12">
+                            <h2 class="text-2xl font-semibold text-gray-900 mb-4 flex items-center">
+                                <i class="fas fa-play-circle text-blue-500 mr-3"></i>
+                                Введение
+                            </h2>
+                            
+                            <div class="space-y-4">
+                                <p>
+                                    <span class="speaker-highlight speaker-alessio">Алессио:</span>
+                                    Привет всем! Добро пожаловать в новый выпуск Space Podcast. Я — Алессио, основатель Kernel Labs. 
+                                    Со мной в студии Свикс, основатель Small AI.
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-swyx">Свикс:</span>
+                                    Всем привет!
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-alessio">Алессио:</span>
+                                    Сегодня у нас в гостях Лэнс Мартин — LangChain, LangGraph и многое другое. Лэнс, добро пожаловать!
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    Рад быть здесь! Я давно слушаю ваш подкаст — здорово наконец присоединиться.
+                                </p>
+                            </div>
+                        </section>
+
+                        <section id="context-engineering-birth" class="mb-12">
+                            <h2 class="text-2xl font-semibold text-gray-900 mb-4 flex items-center">
+                                <i class="fas fa-lightbulb text-yellow-500 mr-3"></i>
+                                Как появился контекст-инжиниринг
+                            </h2>
+                            
+                            <div class="space-y-4">
+                                <p>
+                                    <span class="speaker-highlight speaker-alessio">Алессио:</span>
+                                    Мы давно пересекаемся — ты выступал у нас на AIES, много работал с LangChain. 
+                                    Ты делал и туториалы, и проекты — помню R1 Deep Researcher, «асинхронные/амбентные» агенты. 
+                                    Но настоящим поводом позвать тебя стало твоё недавнее «контекст-инжиниринг» — сейчас об этом говорят все. 
+                                    Как ты к этому пришёл?
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    Забавно: «баззворды» рождаются, когда у многих появляется общий опыт. 
+                                    В начале — середине этого года все начали «строить агентов» — «год агентов». 
+                                    Кажется просто: «цикл вызова инструментов», но на практике сделать работающего агента сложно. 
+                                    Особенно — управлять контекстом.
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    Карпати твитнул и фактически закрепил термин «контекст-инжиниринг» — 
+                                    «искусство давать LLM ровно тот контекст, который нужен для следующего шага». 
+                                    Это идеально ложится на тему агентов. Меня это очень зацепило — я год возился с агентами и описал опыт 
+                                    в посте про open deep research. Термин попал в тренд, потому что отражает реальную боль.
+                                </p>
+                            </div>
+                        </section>
+
+                        <section id="prompt-vs-context" class="mb-12">
+                            <h2 class="text-2xl font-semibold text-gray-900 mb-4 flex items-center">
+                                <i class="fas fa-balance-scale text-purple-500 mr-3"></i>
+                                Промпт-инжиниринг vs Контекст-инжиниринг
+                            </h2>
+                            
+                            <div class="space-y-4">
+                                <p>
+                                    <span class="speaker-highlight speaker-alessio">Алессио:</span>
+                                    Где граница между «промпт-инжинирингом» и «контекст-инжинирингом»? Это одно и то же?
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    Я бы сказал, «промпт-инжиниринг» — подмножество контекст-инжиниринга. 
+                                    В чате главный вход — сообщение пользователя; мы тщательно «готовим» системный и пользовательский промпт.
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    Но в агентах контекст приходит не только от человека — на каждом шаге идут ответы инструментов. 
+                                    Ты управляешь не только системными инструкциями и пользовательскими, но и потоком «наблюдений» 
+                                    из инструментов за десятки и сотни шагов.
+                                </p>
+
+                                <div class="bg-blue-50 border-l-4 border-blue-400 p-4 my-6">
+                                    <p class="text-blue-800">
+                                        <strong>Важно:</strong> У Manus классный разбор: типичная задача — 50 вызовов инструментов. 
+                                        У Anthropic — в проде (например, Claude Code) — сотни.
+                                    </p>
+                                </div>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    Я сам это прочувствовал: собрал «наивный» агент, где все ответы инструментов бездумно добавляются в историю — 
+                                    и внезапно полмиллиона токенов, $1–$2 за прогон. Плюс «context rot» (деградация качества при длинном контексте) — 
+                                    об этом говорил Джефф из Chroma. И банальная проблема — упираешься в окно контекста.
+                                </p>
+                            </div>
+                        </section>
+
+                        <section id="five-categories" class="mb-12">
+                            <h2 class="text-2xl font-semibold text-gray-900 mb-4 flex items-center">
+                                <i class="fas fa-list-ol text-indigo-500 mr-3"></i>
+                                Пять категорий контекст-инжиниринга
+                            </h2>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                                <a href="#offloading" class="category-card bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border border-blue-200 hover:border-blue-300 transition-all duration-200 hover:shadow-md cursor-pointer transform hover:scale-105">
+                                    <h4 class="font-semibold text-blue-900 mb-2">1. Offloading</h4>
+                                    <p class="text-blue-700 text-sm">Выгрузка контекста</p>
+                                </a>
+                                <a href="#isolation" class="category-card bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg border border-green-200 hover:border-green-300 transition-all duration-200 hover:shadow-md cursor-pointer transform hover:scale-105">
+                                    <h4 class="font-semibold text-green-900 mb-2">2. Isolation</h4>
+                                    <p class="text-green-700 text-sm">Изоляция контекста</p>
+                                </a>
+                                <a href="#retrieval" class="category-card bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg border border-purple-200 hover:border-purple-300 transition-all duration-200 hover:shadow-md cursor-pointer transform hover:scale-105">
+                                    <h4 class="font-semibold text-purple-900 mb-2">3. Retrieval</h4>
+                                    <p class="text-purple-700 text-sm">Извлечение информации</p>
+                                </a>
+                                <a href="#reducing" class="category-card bg-gradient-to-br from-orange-50 to-orange-100 p-4 rounded-lg border border-orange-200 hover:border-orange-300 transition-all duration-200 hover:shadow-md cursor-pointer transform hover:scale-105">
+                                    <h4 class="font-semibold text-orange-900 mb-2">4. Reducing</h4>
+                                    <p class="text-orange-700 text-sm">Сжатие контекста</p>
+                                </a>
+                                <a href="#caching" class="category-card bg-gradient-to-br from-red-50 to-red-100 p-4 rounded-lg border border-red-200 hover:border-red-300 transition-all duration-200 hover:shadow-md cursor-pointer transform hover:scale-105">
+                                    <h4 class="font-semibold text-red-900 mb-2">5. Caching</h4>
+                                    <p class="text-red-700 text-sm">Кеширование</p>
+                                </a>
+                            </div>
+                        </section>
+
+                        <section id="offloading" class="mb-12">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                                <i class="fas fa-download text-blue-500 mr-3"></i>
+                                1. Offloading (Выгрузка контекста)
+                            </h3>
+                            
+                            <div class="space-y-4">
+                                <p>
+                                    <span class="speaker-highlight speaker-alessio">Алессио:</span>
+                                    Давай разложим твои «пять категорий» контекст-инжиниринга. Начнём с «offload» — что это?
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    «Наивный» агент каждую порцию ответа инструментов снова несёт модели, и история растёт. 
+                                    Идея offloading: не тащить «сырое» содержимое обратно в LLM, а складывать его «вне контекста» — 
+                                    на диск, в состояние агента (state) и т.п. А в историю записывать лёгкий след — краткую сводку или URL. 
+                                    Агент знает, что «нашёл» и может подтянуть полные данные по требованию. Это существенно экономит токены.
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-swyx">Свикс:</span>
+                                    Как понять «минимум» сведений, который надо оставить в контексте, чтобы модель знала, что и где подгружать?
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    На примере Open Deep Research (сейчас, согласно Deep Research Bench, это лучший открытый deep research-агент): 
+                                    я делаю тщательно промптованную суммаризацию с упором на «полный охват» ключевых пунктов — 
+                                    чтобы агент понимал, когда стоит подтянуть оригинал.
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    Cognition писали, что суммаризация — непростая штука, они даже обучали модель для этого. 
+                                    Мой опыт: если тщательно «инженерить» промпт суммаризации под высокий recall, всё работает очень неплохо.
+                                </p>
+                            </div>
+                        </section>
+
+                        <section id="isolation" class="mb-12">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                                <i class="fas fa-layer-group text-green-500 mr-3"></i>
+                                2. Context Isolation (Изоляция контекста)
+                            </h3>
+                            
+                            <div class="space-y-4">
+                                <p>
+                                    <span class="speaker-highlight speaker-alessio">Алессio:</span>
+                                    Мы на митапе слышали: «сжимать часто, чтобы не ловить context rot». 
+                                    И была мысль про мультиагентность — мол, разные роли изолируют и подгружают своё, а один агент всё не унесёт.
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    Да, «изоляция контекста» через мультиагентность — важная тема. 
+                                    Cognition скептичны к мультиагентам: подагенты принимают собственные решения, они конфликтуют, а согласовать сложно.
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    Я согласен: мультиагенты хороши там, где задачи легко параллелятся и в основном «читают», а не «пишут». 
+                                    Для deep research это идеально: множество подагентов собирают фактуру, а «пишем» — один раз в конце. 
+                                    У Anthropic deep researcher так и устроен.
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    А вот кодинг — сложнее: если каждый подагент «пишет» свою часть, неявные решения конфликтуют. 
+                                    Здесь я скорее на стороне Уолдена из Cognition: нужно осторожно. 
+                                    Хотя у Claude Code уже есть подагенты — значит, они нашли как-то рабочие схемы.
+                                </p>
+                            </div>
+                        </section>
+
+                        <section id="retrieval" class="mb-12">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                                <i class="fas fa-search text-purple-500 mr-3"></i>
+                                3. Retrieval (Извлечение информации)
+                            </h3>
+                            
+                            <div class="space-y-4">
+                                <p>
+                                    <span class="speaker-highlight speaker-alessio">Алессio:</span>
+                                    Перейдём к retrieval. Ты видел разные подходы у код-агентов.
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    Да. В Windsurf (Варун) — классический многошаговый RAG: чанкование кода по семантическим границам, 
+                                    эмбеддинги, векторный поиск, знаниевые графы, ранжирование.
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    А у Anthropic/Claude Code (Борис) — «агентный поиск» без индексации: простые файловые инструменты, 
+                                    «прощупывание» репо, и это работает удивительно хорошо.
+                                </p>
+
+                                <div class="bg-purple-50 border-l-4 border-purple-400 p-4 my-6">
+                                    <h4 class="font-semibold text-purple-900 mb-2">Мини-бенчмарк сравнения методов:</h4>
+                                    <ul class="text-purple-800 space-y-1">
+                                        <li>• Векторное индексирование</li>
+                                        <li>• «llm.txt» (список ссылок с описаниями + инструмент «загрузи файл по ссылке»)</li>
+                                        <li>• Грубая «набивка» всего контента в контекст</li>
+                                    </ul>
+                                    <p class="text-purple-800 mt-2">
+                                        <strong>Лучшим оказался «llm.txt»</strong> с хорошими описаниями и простым инструментом загрузки.
+                                    </p>
+                                </div>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    Лучшим оказался «llm.txt» с хорошими описаниями и простым инструментом загрузки. 
+                                    Агент сам решает: «Для этого вопроса мне нужна такая-то страница». 
+                                    Просто, эффективно, меньше возни, чем строить индекс.
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-swyx">Свикс:</span>
+                                    Я сделал «Deep Wiki» — по сути масштабированный llm.txt для репозиториев. И тоже вижу профит.
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    Я даже написал утилиту, которая пробегает по документации, отправляет каждую страницу в дешёвую LLM 
+                                    для качественного краткого описания и собирает llm.txt. Когда описания хорошие, 
+                                    Claude Code выбирает нужные страницы очень точно. Ключ — качество описаний в llm.txt.
+                                </p>
+                            </div>
+                        </section>
+
+                        <section id="reducing" class="mb-12">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                                <i class="fas fa-compress-alt text-orange-500 mr-3"></i>
+                                4. Reducing Context (Сжатие контекста)
+                            </h3>
+                            
+                            <div class="space-y-4">
+                                <p>
+                                    <span class="speaker-highlight speaker-alessio">Алессio:</span>
+                                    Давай к «уменьшению контекста» (compaction/pruning). Все видели, как IDE-компакторы срабатывают у порога окна.
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    Да, но помимо «почти упёрлись в окно» можно и нужно сжимать на границах инструментов. 
+                                    В Open Deep Research я так и делаю.
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    Пример у Hugging Face: их «open deep research» запускает код-блоки в окружении, 
+                                    а LLM возвращают только «выжимку», сырые результаты остаются в окружении. 
+                                    У Anthropic — тоже суммаризация «нахождений».
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    Контраргумент от Manus/Cognition: сжатие контекста опасно потерями. 
+                                    Поэтому они пропагандируют «offload»: исходник сохраняем (диск, файловая система), 
+                                    а в контекст отдаём безопасную выжимку, чтобы при необходимости подтянуть оригинал.
+                                </p>
+
+                                <div class="bg-orange-50 border-l-4 border-orange-400 p-4 my-6">
+                                    <p class="text-orange-800">
+                                        <strong>Спорный момент:</strong> оставлять ли «ошибки» в истории? 
+                                        Есть «context poisoning» (Дрю Бруник, Gemini Tech Report: ошибка/галлюцинация «отравляет» историю и уводит не туда). 
+                                        Но для ошибок инструментов я предпочитаю оставлять их в истории — агент так быстрее исправляется.
+                                    </p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section id="caching" class="mb-12">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                                <i class="fas fa-memory text-red-500 mr-3"></i>
+                                5. Caching (Кеширование)
+                            </h3>
+                            
+                            <div class="space-y-4">
+                                <p>
+                                    <span class="speaker-highlight speaker-alessio">Алессио:</span>
+                                    Пройдёмся по caching.
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    Manus правильно отметили: из-за цикла агент каждый раз снова «пережёвывает» ту же историю. 
+                                    Кеширование истории — снижает стоимость и задержки. Ранее у Anthropic был явный заголовок для кеша; 
+                                    сейчас у многих провайдеров кеширование стало более «автоматическим».
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    Но важно: кеш не лечит «длинный контекст» как таковой — лишь ускоряет и удешевляет. 
+                                    «Context rot» от длины никуда не девается, даже если попадать в кеш.
+                                </p>
+                            </div>
+                        </section>
+
+                        <section id="memory-vs-context" class="mb-12">
+                            <h2 class="text-2xl font-semibold text-gray-900 mb-4 flex items-center">
+                                <i class="fas fa-brain text-teal-500 mr-3"></i>
+                                Memory vs Context Engineering
+                            </h2>
+                            
+                            <div class="space-y-4">
+                                <p>
+                                    <span class="speaker-highlight speaker-alessio">Алессио:</span>
+                                    Поговорим о «памяти» (memory). Это тоже про контекст?
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    Частично да. Я мыслю по двум осям: запись и чтение воспоминаний, и уровень автоматизации для каждой.
+                                </p>
+
+                                <div class="bg-teal-50 border-l-4 border-teal-400 p-4 my-6">
+                                    <h4 class="font-semibold text-teal-900 mb-2">Claude Code подход (простой и симпатичный):</h4>
+                                    <ul class="text-teal-800 space-y-1">
+                                        <li>• <strong>Читать</strong> — просто подтягивать все ваши «CLAUDE.md» при запуске</li>
+                                        <li>• <strong>Записывать</strong> — по явному запросу пользователя («сохранить в память»)</li>
+                                    </ul>
+                                </div>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    Другой полюс — ChatGPT: он сам решает, когда писать/читать память. Это сложно и чревато: 
+                                    Саймон показывал, как генерация картинки «подтянула» его геолокацию из памяти и вставила в сцену, хотя он этого не хотел.
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    Чтение памяти на масштабе — это, по сути, retrieval: индекс прошлых диалогов, семантический поиск и т.д.
+                                </p>
+
+                                <div class="bg-green-50 border-l-4 border-green-400 p-4 my-6">
+                                    <p class="text-green-800">
+                                        <strong>Практичный подход:</strong> Мне нравится пара «память + человек в контуре»: 
+                                        у моего «почтового агента» правки пользователя (тон, формулировки, правки вызовов инструментов) идут в память; 
+                                        потом LLM рефлексирует и обновляет инструкции с учётом предпочтений. 
+                                        Это простой, практичный путь «обучать» агента под пользователя.
+                                    </p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section id="bitter-lesson" class="mb-12">
+                            <h2 class="text-2xl font-semibold text-gray-900 mb-4 flex items-center">
+                                <i class="fas fa-graduation-cap text-amber-500 mr-3"></i>
+                                Горький урок (Bitter Lesson) в AI-инжиниринге
+                            </h2>
+                            
+                            <div class="space-y-4">
+                                <p>
+                                    <span class="speaker-highlight speaker-alessio">Алессио:</span>
+                                    Завершим «горьким уроком» (Bitter Lesson). Ты проводишь параллели с AI-инжинирингом.
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    В блестящем докладе Хёнг Вон Чунга (ex-OpenAI, теперь HMSL/ML) про «горький урок» главный тезис: 
+                                    каждые ~5 лет за те же деньги доступный compute вырастает на порядок; 
+                                    в долгую побеждают более общие методы с меньшим количеством ручных индуктивных предубеждений, 
+                                    питаемые данными и вычислениями.
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    На практике: чтобы «заработало сегодня», мы добавляем структуру (жёсткие пайплайны, ручные эвристики). 
+                                    Но по мере роста возможностей моделей эта структура начинает сдерживать прогресс. 
+                                    Мы должны уметь вовремя её «снимать».
+                                </p>
+
+                                <div class="bg-amber-50 border-l-4 border-amber-400 p-6 my-6">
+                                    <h4 class="font-semibold text-amber-900 mb-3">Мой опыт с Deep Research:</h4>
+                                    <div class="text-amber-800 space-y-2">
+                                        <p>• Начал с очень структурного воркфлоу без tool calling (в 2024 это казалось «надёжнее»)</p>
+                                        <p>• Потом модели и инструментальные стеки (MCP, вызовы инструментов) резко улучшились — и «структура» меня блокировала</p>
+                                        <p>• Дважды выкидывал и переписывал систему</p>
+                                        <p>• Сначала перешёл к агенту, но допустил ошибку: дал подагентам писать разделы отчёта по отдельности — итог получался разрозненным</p>
+                                        <p>• Убрал независимое «письмо» и сделал единичную финальную генерацию отчёта — стало отлично</p>
+                                    </div>
+                                </div>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    Мораль: строим «настолько структуру, насколько нужно сегодня», 
+                                    но постоянно пересматриваем и снимаем её по мере взросления моделей.
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-swyx">Свикс:</span>
+                                    Это похоже на то, что происходит на рынке: инкрементальные «AI над существующим процессом» 
+                                    сначала выигрывают у «AI-native» подходов, но потом модели «догоняют» и выигрывает более общий, 
+                                    менее структурированный дизайн. И да — фреймворки и абстракции стоит делать легко «разбираемыми».
+                                </p>
+                            </div>
+                        </section>
+
+                        <section id="frameworks" class="mb-12">
+                            <h2 class="text-2xl font-semibold text-gray-900 mb-4 flex items-center">
+                                <i class="fas fa-code text-slate-500 mr-3"></i>
+                                Фреймворки и абстракции
+                            </h2>
+                            
+                            <div class="space-y-4">
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    Согласен. Важно различать:
+                                </p>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
+                                    <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+                                        <h4 class="font-semibold text-green-900 mb-3 flex items-center">
+                                            <i class="fas fa-check-circle mr-2"></i>
+                                            Низкоуровневая оркестрация
+                                        </h4>
+                                        <ul class="text-green-800 space-y-2 text-sm">
+                                            <li>• Узлы, рёбра, состояние (как в LangGraph или внутреннем Shopify ROAST)</li>
+                                            <li>• Набор кирпичиков, их легко перекомпоновать</li>
+                                            <li>• Извлечь пользу от чекпойнтов/состояния без «закатывания в бетон»</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="bg-red-50 border border-red-200 rounded-lg p-6">
+                                        <h4 class="font-semibold text-red-900 mb-3 flex items-center">
+                                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                                            Высокоуровневые абстракции-агенты
+                                        </h4>
+                                        <ul class="text-red-800 space-y-2 text-sm">
+                                            <li>• <code class="bg-red-200 px-1 rounded">from framework import Agent</code></li>
+                                            <li>• Риск «чёрного ящика»</li>
+                                            <li>• Сложнее «снимать структуру» по мере эволюции</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    Мы сами в LangGraph делаем упор на низкоуровневые компоненты и совместимость с MCP: 
+                                    крупным организациям важны стандарты интеграций.
+                                </p>
+
+                                <div class="bg-blue-50 border-l-4 border-blue-400 p-4 my-6">
+                                    <p class="text-blue-800">
+                                        См. доклад Джона Уэлша из Anthropic про эволюцию MCP: когда у всех «всё своё», наступает хаос, 
+                                        и стандарт резко снижает когнитивную нагрузку.
+                                    </p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section id="mcp" class="mb-12">
+                            <h2 class="text-2xl font-semibold text-gray-900 mb-4 flex items-center">
+                                <i class="fas fa-plug text-cyan-500 mr-3"></i>
+                                MCP и стандартизация
+                            </h2>
+                            
+                            <div class="space-y-4">
+                                <p>
+                                    <span class="speaker-highlight speaker-alessio">Алессio:</span>
+                                    А MCP-серверы для документации?
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    У нас есть простой MCP-сервер для LangGraph документации — «MCP doc». 
+                                    Он фактически отдаёт llm.txt и даёт простой поиск/загрузку.
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    Важно: хранить «подсказки» (prompts) в самом сервере — как им пользоваться. 
+                                    Многие недооценивают, что в спецификации MCP есть prompts и sampling — это сильно помогает, 
+                                    особенно для онбординга агентов.
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    Я обычно делаю отдельные серверы для разных проектов со специфичными промптами и ресурсами. 
+                                    Это помогает избежать ситуации «не работает» → «а, нужно лучше промптить» → «но как пользователь должен об этому узнать?»
+                                </p>
+                            </div>
+                        </section>
+
+                        <section id="practical-conclusions" class="mb-12">
+                            <h2 class="text-2xl font-semibold text-gray-900 mb-4 flex items-center">
+                                <i class="fas fa-lightbulb text-yellow-500 mr-3"></i>
+                                Практические выводы
+                            </h2>
+                            
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+                                    <h3 class="font-semibold text-green-900 mb-4 flex items-center">
+                                        <i class="fas fa-check-circle mr-2"></i>
+                                        Что работает сейчас:
+                                    </h3>
+                                    <ul class="text-green-800 space-y-2">
+                                        <li>• Offloading с качественной суммаризацией</li>
+                                        <li>• llm.txt + простые файловые инструменты часто лучше сложного RAG</li>
+                                        <li>• Мультиагенты для «чтения», единый агент для «письма»</li>
+                                        <li>• Кеширование для экономии, но не для решения context rot</li>
+                                        <li>• Память через human-in-the-loop для персонализации</li>
+                                    </ul>
+                                </div>
+
+                                <div class="bg-red-50 border border-red-200 rounded-lg p-6">
+                                    <h3 class="font-semibold text-red-900 mb-4 flex items-center">
+                                        <i class="fas fa-times-circle mr-2"></i>
+                                        Чего избегать:
+                                    </h3>
+                                    <ul class="text-red-800 space-y-2">
+                                        <li>• Наивного накопления всего контекста в истории</li>
+                                        <li>• Преждевременных абстракций, которые сложно «разобрать»</li>
+                                        <li>• Мультиагентов для сильно связанных задач (например, кодинг)</li>
+                                        <li>• Агрессивной компрессии без возможности восстановить исходник</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="bg-blue-50 border-l-4 border-blue-400 p-6 my-6">
+                                <h3 class="font-semibold text-blue-900 mb-2 flex items-center">
+                                    <i class="fas fa-quote-left mr-2"></i>
+                                    Философия:
+                                </h3>
+                                <p class="text-blue-800 text-lg italic">
+                                    «Добавляй структуру, чтобы работало сегодня, но будь готов её убрать завтра»
+                                </p>
+                            </div>
+                        </section>
+
+                        <section id="conclusion" class="mb-12">
+                            <h2 class="text-2xl font-semibold text-gray-900 mb-4 flex items-center">
+                                <i class="fas fa-flag-checkered text-gray-600 mr-3"></i>
+                                Заключение
+                            </h2>
+                            
+                            <div class="space-y-4">
+                                <p>
+                                    <span class="speaker-highlight speaker-alessio">Алессio:</span>
+                                    Кажется, мы прошлись по всем крупным темам: offloading, сжатие/суммаризация, retrieval, 
+                                    изоляция контекста, кеширование, память, «горький урок», роль фреймворков и MCP. 
+                                    Лэнс, что-нибудь напоследок?
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    Да — я сделал бесплатные курсы: про амбиентных агентов и про open deep research. 
+                                    Мне нравится связка «сделал проект — сделал онбординг-курс к нему» 
+                                    (по мысли Карпати: «видео — отличный онрамп»).
+                                </p>
+
+                                <p>
+                                    <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                    Если хотите попробовать сильный открытый deep research-агент — загляните. 
+                                    У нас уже есть ещё более мощные результаты с GPT-5, но и текущая открытая версия очень конкурентоспособна.
+                                </p>
+
+                                <div class="flex space-x-4 mt-6">
+                                    <p>
+                                        <span class="speaker-highlight speaker-alessio">Алессio:</span>
+                                        Спасибо, Лэнс! Было очень интересно.
+                                    </p>
+                                </div>
+
+                                <div class="flex space-x-4">
+                                    <p>
+                                        <span class="speaker-highlight speaker-swyx">Свикс:</span>
+                                        Спасибо!
+                                    </p>
+                                </div>
+
+                                <div class="flex space-x-4">
+                                    <p>
+                                        <span class="speaker-highlight speaker-lance">Лэнс:</span>
+                                        Спасибо, что позвали!
+                                    </p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Footer -->
+                        <footer class="border-t border-gray-200 pt-8 mt-12">
+                            <div class="bg-gray-50 rounded-lg p-6">
+                                <h3 class="font-semibold text-gray-900 mb-3 flex items-center">
+                                    <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                                    Источник
+                                </h3>
+                                <p class="text-gray-700 mb-4">
+                                    <strong>Context Engineering for Agents</strong> — Lance Martin, LangChain
+                                </p>
+                                <p class="text-sm text-gray-600 mb-4">
+                                    Транскрипт подготовлен для удобного чтения и сохраняет все ключевые идеи оригинальной беседы
+                                </p>
+                                <a href="https://www.youtube.com/watch?v=_IlTcWciEC4" target="_blank" rel="noopener noreferrer" 
+                                   class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                                    <i class="fab fa-youtube mr-2"></i>
+                                    Смотреть оригинальное видео
+                                </a>
+                            </div>
+                        </footer>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- About Section -->
+                <div class="md:col-span-1">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        <i class="fas fa-robot text-blue-400 mr-2"></i>
+                        О транскрипте
+                    </h3>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-4">
+                        Подробный транскрипт беседы с Лэнсом Мартином о контекст-инжиниринге для AI агентов. 
+                        Материал подготовлен для образовательных целей и содержит практические выводы по построению эффективных агентных систем.
+                    </p>
+                    <div class="flex items-center text-sm text-gray-400">
+                        <i class="fas fa-calendar-alt mr-2"></i>
+                        <span>16 сентября 2025</span>
+                    </div>
+                </div>
+
+                <!-- Links Section -->
+                <div class="md:col-span-1">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        <i class="fas fa-link text-green-400 mr-2"></i>
+                        Полезные ссылки
+                    </h3>
+                    <ul class="space-y-3">
+                        <li>
+                            <a href="https://www.youtube.com/watch?v=_IlTcWciEC4" target="_blank" rel="noopener noreferrer" 
+                               class="text-gray-300 hover:text-white transition-colors duration-200 flex items-center text-sm">
+                                <i class="fab fa-youtube text-red-500 mr-2"></i>
+                                Оригинальное видео
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://langchain.com" target="_blank" rel="noopener noreferrer" 
+                               class="text-gray-300 hover:text-white transition-colors duration-200 flex items-center text-sm">
+                                <i class="fas fa-external-link-alt text-blue-400 mr-2"></i>
+                                LangChain
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/langchain-ai/langgraph" target="_blank" rel="noopener noreferrer" 
+                               class="text-gray-300 hover:text-white transition-colors duration-200 flex items-center text-sm">
+                                <i class="fab fa-github text-gray-400 mr-2"></i>
+                                LangGraph
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Contact Section -->
+                <div class="md:col-span-1">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        <i class="fas fa-paper-plane text-blue-400 mr-2"></i>
+                        Автор транскрипта
+                    </h3>
+                    <div class="space-y-3">
+                        <p class="text-gray-300 text-sm">
+                            <span class="font-medium">Дмитрий Жечков</span><br>
+                            <span class="text-gray-400">Подготовка и структурирование материала</span>
+                        </p>
+                        
+                        <!-- Telegram Channel Link -->
+                        <a href="https://t.me/llm_notes" target="_blank" rel="noopener noreferrer" 
+                           class="telegram-link inline-flex items-center px-4 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-lg text-white font-medium text-sm">
+                            <i class="fab fa-telegram-plane mr-2 text-lg"></i>
+                            <div class="flex flex-col items-start">
+                                <span>Telegram канал</span>
+                                <span class="text-blue-200 text-xs">@llm_notes</span>
+                            </div>
+                        </a>
+                        
+                        <p class="text-gray-400 text-xs">
+                            Больше материалов о LLM, агентах и AI-инжиниринге
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="border-t border-gray-800 mt-8 pt-6">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="text-gray-400 text-sm mb-4 md:mb-0">
+                        <p>© 2025 Интерактивный транскрипт. Материал создан в образовательных целях.</p>
+                    </div>
+                    
+                    <div class="flex items-center space-x-6 text-sm text-gray-400">
+                        <span class="flex items-center">
+                            <i class="fas fa-heart text-red-500 mr-1"></i>
+                            Сделано с любовью к AI
+                        </span>
+                        <span class="hidden md:block">|</span>
+                        <span class="flex items-center">
+                            <i class="fas fa-code text-green-400 mr-1"></i>
+                            Open Source
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Technologies Used -->
+                <div class="mt-4 pt-4 border-t border-gray-800">
+                    <div class="flex flex-wrap items-center justify-center gap-4 text-xs text-gray-500">
+                        <span class="flex items-center">
+                            <i class="fab fa-html5 text-orange-500 mr-1"></i>
+                            HTML5
+                        </span>
+                        <span class="flex items-center">
+                            <i class="fab fa-css3-alt text-blue-500 mr-1"></i>
+                            Tailwind CSS
+                        </span>
+                        <span class="flex items-center">
+                            <i class="fab fa-js-square text-yellow-500 mr-1"></i>
+                            JavaScript
+                        </span>
+                        <span class="flex items-center">
+                            <i class="fas fa-search text-purple-500 mr-1"></i>
+                            Full-text Search
+                        </span>
+                        <span class="flex items-center">
+                            <i class="fas fa-mobile-alt text-green-500 mr-1"></i>
+                            Responsive Design
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/main.js"></script>
+</body>
+</html>

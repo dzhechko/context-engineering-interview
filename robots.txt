@@ -1,0 +1,29 @@
+# Robots.txt для сайта с транскриптом "Контекст-инжиниринг для агентов"
+
+User-agent: *
+Allow: /
+
+# Разрешить индексацию всех важных разделов
+Allow: /index.html
+Allow: /js/
+Allow: /#intro
+Allow: /#context-engineering-birth
+Allow: /#prompt-vs-context
+Allow: /#five-categories
+Allow: /#offloading
+Allow: /#isolation
+Allow: /#retrieval
+Allow: /#reducing
+Allow: /#caching
+Allow: /#memory-vs-context
+Allow: /#bitter-lesson
+Allow: /#frameworks
+Allow: /#mcp
+Allow: /#practical-conclusions
+Allow: /#conclusion
+
+# Указать расположение sitemap
+Sitemap: https://YOUR-USERNAME.github.io/context-engineering-transcript/sitemap.xml
+
+# Дополнительная информация для поисковых систем
+# Этот сайт содержит образовательный контент о контекст-инжиниринге для AI агентов

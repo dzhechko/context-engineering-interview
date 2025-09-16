@@ -1,0 +1,66 @@
+# Конфигурация Jekyll для GitHub Pages
+# Транскрипт "Контекст-инжиниринг для агентов"
+
+# Основные настройки
+title: "Контекст-инжиниринг для агентов"
+description: "Интерактивный транскрипт беседы с Лэнсом Мартином (LangChain) о контекст-инжиниринге для AI агентов"
+author: "Дмитрий Жечков"
+email: ""
+url: "https://YOUR-USERNAME.github.io"
+baseurl: "/context-engineering-transcript"
+
+# Настройки сайта
+lang: ru
+timezone: Europe/Moscow
+
+# SEO настройки
+twitter:
+  username: ""
+  card: summary_large_image
+
+social:
+  name: "Дмитрий Жечков"
+  links:
+    - "https://t.me/llm_notes"
+
+# Исключения из обработки Jekyll
+exclude:
+  - README.md
+  - .github/
+  - .gitignore
+  - Gemfile
+  - Gemfile.lock
+
+# Включения в обработку
+include:
+  - _pages
+  - _posts
+  - assets
+
+# Настройки плагинов
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
+  - jekyll-feed
+
+# Настройки Markdown
+markdown: kramdown
+highlighter: rouge
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+# Настройки коллекций
+collections_dir: collections
+
+# Настройки сжатия
+sass:
+  style: compressed
+
+# Настройки безопасности
+safe: true
+incremental: false
+profile: false
+
+# GitHub Pages совместимость
+github: [metadata]
